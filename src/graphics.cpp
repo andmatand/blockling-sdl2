@@ -3,11 +3,11 @@
 int SCALED_SCREEN_W = SCREEN_W * GRAPHICS_SCALE;
 int SCALED_SCREEN_H = SCREEN_H * GRAPHICS_SCALE;
 
-SDL_Window* WINDOW;
-SDL_Renderer* RENDERER;
+SDL_Window* WINDOW = NULL;
+SDL_Renderer* RENDERER = NULL;
 
-SDL_Texture* SKIN_TEXTURE;
-SDL_Rect* SKIN_BG_RECT;
+SDL_Texture* SKIN_TEXTURE = NULL;
+SDL_Rect* SKIN_BG_RECT = NULL;
 
 
 uint8_t GetPixelAlpha(SDL_Surface* surface, int x, int y) {
@@ -17,7 +17,7 @@ uint8_t GetPixelAlpha(SDL_Surface* surface, int x, int y) {
     uint8_t alpha;
 
     SDL_LockSurface(surface);
-    pixel = pixels[(y * surface->pitch) + x];
+    pixel = pixels[(y * surface->w) + x];
     SDL_UnlockSurface(surface);
 
     // Get the alpha component of the pixel color
