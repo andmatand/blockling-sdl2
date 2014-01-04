@@ -45,7 +45,7 @@ namespace AssetLoader {
         DestroySkin();
 
         // Load the skin into a surface
-        SDL_Surface* surface = SDL_LoadBMP("res/skin/default.bmp");
+        SDL_Surface* surface = SDL_LoadBMP("asset/skin/default.bmp");
 
         SKIN_BG_RECT = new SDL_Rect;
 
