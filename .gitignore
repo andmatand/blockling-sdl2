@@ -1,0 +1,8 @@
+# Compiled C++ objects
+*.o
+
+# Temporary vim files
+*.swp
+
+# Binary
+blockling
