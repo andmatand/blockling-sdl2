@@ -6,13 +6,14 @@
 #include "graphics.hpp"
 
 namespace AssetLoader {
-    void AutoSizeBackgroundRect(SDL_Surface*, SDL_Rect*);
-
     void LoadEverything();
     void DestroyEverything();
 
     void LoadSkin();
     void DestroySkin();
+
+    void InitSpriteRects();
+    void DestroySpriteRects();
 }
 
 #endif // ASSETLOADER_HPP

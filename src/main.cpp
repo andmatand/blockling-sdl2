@@ -7,6 +7,30 @@ int main(int argc, char* argv[]) {
     InitSDL();
     AssetLoader::LoadEverything();
 
+    World world;
+
+    // DEBUG
+    Brick* brick = new Brick(0, 0);
+    Brick* brick2 = new Brick(0, Graphics::TILE_H);
+    world.AddEntity(brick);
+    world.AddEntity(brick2);
+
+    bool quit = false;
+    while (!quit) {
+        SDL_Event event;
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                quit = true;
+                break;
+            }
+        }
+
+        world.Update();
+
+
+        SDL_Delay(250); // TEMP: save batteries
+    }
+
     AssetLoader::DestroyEverything();
     DestroySDL();
 
@@ -16,26 +40,28 @@ int main(int argc, char* argv[]) {
 void InitSDL() {
     SDL_Init(SDL_INIT_VIDEO);
 
-    WINDOW = SDL_CreateWindow("BLOCKLING",
-                              SDL_WINDOWPOS_CENTERED,
-                              SDL_WINDOWPOS_CENTERED,
-                              SCALED_SCREEN_W,
-                              SCALED_SCREEN_H,
-                              0);
+    Graphics::window = SDL_CreateWindow("BLOCKLING",
+                                        SDL_WINDOWPOS_CENTERED,
+                                        SDL_WINDOWPOS_CENTERED,
+                                        Graphics::SCREEN_W,
+                                        Graphics::SCREEN_H,
+                                        0);
 
-    RENDERER = SDL_CreateRenderer(WINDOW, -1,
-                                  SDL_RENDERER_ACCELERATED |
-                                  SDL_RENDERER_PRESENTVSYNC);
+    Graphics::renderer = SDL_CreateRenderer(Graphics::window, -1,
+                                            SDL_RENDERER_ACCELERATED |
+                                            SDL_RENDERER_PRESENTVSYNC);
 
     SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest"); // ALL the pixels!
-    SDL_RenderSetLogicalSize(RENDERER, SCALED_SCREEN_W, SCALED_SCREEN_H);
+    SDL_RenderSetLogicalSize(Graphics::renderer,
+                             Graphics::SCREEN_W,
+                             Graphics::SCREEN_H);
 
     // Hide the cursor
     SDL_ShowCursor(0);
 }
 
 void DestroySDL() {
-    SDL_DestroyRenderer(RENDERER);
-    SDL_DestroyWindow(WINDOW);
+    SDL_DestroyRenderer(Graphics::renderer);
+    SDL_DestroyWindow(Graphics::window);
     SDL_Quit();
 }

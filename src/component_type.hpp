@@ -1,0 +1,10 @@
+#ifndef COMPONENT_TYPE_HPP
+#define COMPONENT_TYPE_HPP
+
+enum COMPONENT_TYPE {
+    POSITION = 1,
+    SIZE = 2,
+    SPRITE = 4
+};
+
+#endif // COMPONENT_TYPE_HPP
