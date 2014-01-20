@@ -2,6 +2,7 @@
 A complete rewrite of blockling, using SDL 2.
 
 ## Goals
-* Cleaner, more object-oriented and composition-based codebase
+* More standards-compliant C++ codebase
+* Entity Component System architecture
 * Non-framerate-locked physics
 * Built-in graphical level-editor
