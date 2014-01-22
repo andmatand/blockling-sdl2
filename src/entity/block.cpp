@@ -1,6 +1,6 @@
-#include "brick.hpp"
+#include "block.hpp"
 
-Brick::Brick(int32_t x, int32_t y) {
+Block::Block(int32_t x, int32_t y) {
     AddComponent(COLLIDABLE, new Collidable());
 
     Position* position = new Position();
@@ -11,6 +11,8 @@ Brick::Brick(int32_t x, int32_t y) {
     AddComponent(SIZE, new Size());
 
     Sprite* sprite = new Sprite();
-    sprite->index = 2;
+    sprite->index = 0;
     AddComponent(SPRITE, sprite);
+
+    AddComponent(VELOCITY, new Velocity());
 }

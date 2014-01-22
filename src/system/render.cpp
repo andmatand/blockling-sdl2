@@ -2,7 +2,7 @@
 
 //RenderSystem::RenderSystem() : componentMask(POSITION | SPRITE) {}
 RenderSystem::RenderSystem() {
-    componentMask = POSITION | SPRITE;
+    componentMask = POSITION | SIZE | SPRITE;
 }
 
 void RenderSystem::AddEntity(Entity* entity) {
@@ -19,6 +19,8 @@ void RenderSystem::AddEntity(Entity* entity) {
 void RenderSystem::Update() {
     SDL_RenderClear(Graphics::renderer);
 
+    // DEBUG
+    SDL_RenderSetScale(Graphics::renderer, 2, 2);
     for (auto node : nodes) {
         SDL_Rect destRect;
         destRect.x = node.position->x;

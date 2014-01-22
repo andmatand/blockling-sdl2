@@ -6,10 +6,6 @@
 #include "graphics.hpp"
 #include "world.hpp"
 
-// DEBUG
-#include <iostream>
-#include "entity/brick.hpp"
-
 static void DestroySDL();
 static void InitSDL();
 extern World world;

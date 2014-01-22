@@ -2,9 +2,11 @@
 #define COMPONENT_TYPE_HPP
 
 enum COMPONENT_TYPE {
-    POSITION = 1,
-    SIZE = 2,
-    SPRITE = 4
+    COLLIDABLE = 1,
+    POSITION = 2,
+    SIZE = 4,
+    SPRITE = 8,
+    VELOCITY = 16
 };
 
 #endif // COMPONENT_TYPE_HPP

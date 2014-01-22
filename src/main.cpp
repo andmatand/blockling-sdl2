@@ -7,29 +7,40 @@ int main(int argc, char* argv[]) {
     InitSDL();
     AssetLoader::LoadEverything();
 
-    World world;
-
-    // DEBUG
-    Brick* brick = new Brick(0, 0);
-    Brick* brick2 = new Brick(0, Graphics::TILE_H);
-    world.AddEntity(brick);
-    world.AddEntity(brick2);
+    World* world = new World();
 
     bool quit = false;
+    uint32_t timeDelta;
+    uint32_t lastTicks = SDL_GetTicks();
+    uint32_t currentTicks;
     while (!quit) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
-                quit = true;
-                break;
+            switch (event.type) {
+                case SDL_QUIT:
+                    quit = true;
+                    break;
+                case SDL_KEYDOWN:
+                    if (event.key.keysym.sym == SDLK_SPACE) {
+                        delete world;
+                        world = NULL;
+
+                        world = new World();
+                    }
+                    break;
             }
         }
 
-        world.Update();
+        currentTicks = SDL_GetTicks();
+        timeDelta = currentTicks - lastTicks;
+        lastTicks = currentTicks;
 
+        world->Update(timeDelta);
 
-        SDL_Delay(250); // TEMP: save batteries
+        //SDL_Delay(50); // DEBUG: create artificial lag
     }
+    delete world;
+    world = NULL;
 
     AssetLoader::DestroyEverything();
     DestroySDL();

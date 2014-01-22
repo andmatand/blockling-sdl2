@@ -1,27 +1,30 @@
-#ifndef RENDER_HPP
-#define RENDER_HPP
+#ifndef GRAVITY_HPP
+#define GRAVITY_HPP
 
 #include <vector>
+#include "../entity.hpp"
 #include "../graphics.hpp"
 #include "../system.hpp"
 #include "../component/position.hpp"
 #include "../component/size.hpp"
 #include "../component/sprite.hpp"
+#include "../component/velocity.hpp"
 
-class RenderSystem : public System {
+// DEBUG
+#include <iostream>
+
+class GravitySystem : public System {
     public:
-        RenderSystem();
+        GravitySystem();
         void AddEntity(Entity* entity);
         void Update();
 
     private:
         struct Node {
-            Position* position;
-            Size* size;
-            Sprite* sprite;
+            Velocity* velocity;
         };
 
         std::vector<Node> nodes;
 };
 
-#endif // RENDER_HPP
+#endif // GRAVITY_HPP
