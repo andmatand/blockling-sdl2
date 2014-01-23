@@ -7,9 +7,12 @@
 struct Velocity : Component {
     int8_t x;
     int8_t y;
-    bool hasMovedThisFrame;
+    bool hasMoved;
+    bool hasUpdated;
+    bool hasBeenPushed;
 
-    Velocity() : x(0), y(0), hasMovedThisFrame(false) {};
+    Velocity() : x(0), y(0), hasMoved(false),
+                 hasUpdated(false) {};
 };
 
 #endif // VELOCITY_HPP

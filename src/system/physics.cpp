@@ -63,54 +63,55 @@ bool PhysicsSystem::RectangleOverlap(Position* position1, Size* size1,
     }
 }
 
-bool PhysicsSystem::UpdateNode(Node* node) {
-    // If this node doesn't need to move, or it has already moved this frame
-    if (!NodeNeedsToMove(node) || node->velocity->hasMovedThisFrame) {
+// Return values:
+//   true   Update completed
+//   false  Update is postponed
+bool PhysicsSystem::UpdateNodeAxis(Node* node, AXIS axis) {
+    // If the node already moved
+    if (node->velocity->hasMoved) {
         return true;
     }
 
-    enum AXIS { X, Y };
-
-    Position testPosition, previousPosition, destination;
+    Position originalPosition, testPosition, previousPosition, destination;
     bool hit = false;
     bool postpone = false;
     int8_t velocity = 0;
     int8_t velocityStep = 0;
-    AXIS velocityAxis;
 
-    // Only allow velocity on one axis at a time
-    if (node->velocity->x != 0) {
-        velocity = node->velocity->x;
-        node->velocity->y = 0;
-        velocityAxis = X;
-    }
-    else if (node->velocity->y != 0) {
+    if (axis == Y) {
         velocity = node->velocity->y;
-        node->velocity->x = 0;
-        velocityAxis = Y;
+
+        destination.x = node->position->x;
+        destination.y = node->position->y + node->velocity->y;
+    }
+    else {
+        velocity = node->velocity->x;
+
+        destination.x = node->position->x + node->velocity->x;
+        destination.y = node->position->y;
     }
 
     if (velocity > 0) {
         velocityStep = 1;
     }
-    else {
+    else if (velocity < 0) {
         velocityStep = -1;
     }
+    else {
+        return true;
+    }
 
-    destination.x = node->position->x + node->velocity->x;
-    destination.y = node->position->y + node->velocity->y;
 
     testPosition.x = node->position->x;
     testPosition.y = node->position->y;
-
-    //std::cout << "\ny: " << node->position->y << "\n";
-    //std::cout << "dest y: " << destination.y << "\n";
+    originalPosition.x = node->position->x;
+    originalPosition.y = node->position->y;
 
     while (testPosition.x != destination.x || testPosition.y != destination.y) {
         previousPosition.x = testPosition.x;
         previousPosition.y = testPosition.y;
 
-        if (velocityAxis == X) {
+        if (axis == X) {
             testPosition.x += velocityStep;
         }
         else {
@@ -123,32 +124,48 @@ bool PhysicsSystem::UpdateNode(Node* node) {
             if (!NodesAreTheSame(node, &cn) &&
                 RectangleOverlap(&testPosition, node->size,
                                  cn.position, cn.size)) {
+
                 // If the collidable is not movable, or it has already moved
                 // this frame
-                if (cn.velocity == NULL || cn.velocity->hasMovedThisFrame) {
+                if (cn.velocity == NULL || cn.velocity->hasMoved) {
                     // Consider this a hit
-                    //std::cout << "hit\n";
                     hit = true;
                     break;
                 }
-                else {
-                    // Postpone the node's movement until after the collidable
-                    // has moved
-                    postpone = true;
-                    //std::cout << "postponed\n";
-                    break;
+
+                // If the collidable can move
+                if (cn.velocity != NULL) {
+                    // If the collidable has not been updated yet
+                    if (!cn.velocity->hasUpdated) {
+                        postpone = true;
+                        break;
+                    }
+
+                    // If the collidable has not been pushed yet, and it is not
+                    // moving
+                    if (!cn.velocity->hasBeenPushed &&
+                        cn.velocity->x == 0 && cn.velocity->y == 0) {
+                        if (axis == X) {
+                            if (velocity > 0) {
+                                cn.velocity->x = (destination.x +
+                                                  node->size->w) -
+                                                 cn.position->x;
+                            }
+                            else {
+                                cn.velocity->x = destination.x -
+                                                 (cn.position->x + cn.size->w);
+                            }
+
+                            cn.velocity->hasUpdated = false;
+                            cn.velocity->hasBeenPushed = true;
+                            postpone = true;
+                            break;
+                        }
+                    }
                 }
 
-                // If the collidable can move, and it hasn't already moved
-                if (cn.velocity != NULL && !cn.velocity->hasMovedThisFrame) {
-                    // Try to push the collidable out of the way
-
-                    //if (velocityAxis == X) {
-                    //}
-                    //else {
-                    //    cn.velocity->x;
-                    //}
-                }
+                hit = true;
+                break;
             }
         }
 
@@ -157,11 +174,15 @@ bool PhysicsSystem::UpdateNode(Node* node) {
 
     if (hit) {
         // Clear the node's velocity
-        node->velocity->x = 0;
-        node->velocity->y = 0;
+        if (axis == Y) {
+            node->velocity->y = 0;
+        }
+        else {
+            node->velocity->x = 0;
+        }
     }
 
-    // If the node's movement was not postponed
+    // If the node's movement was postponed
     if (postpone) {
         return false;
     }
@@ -177,26 +198,44 @@ bool PhysicsSystem::UpdateNode(Node* node) {
             node->position->y = destination.y;
         }
 
-        node->velocity->hasMovedThisFrame = true;
+        // If the node's position has changed
+        if (node->position->x != originalPosition.x ||
+            node->position->y != originalPosition.y) {
+            node->velocity->hasMoved = true;
+        }
 
         return true;
     }
 }
 
-void PhysicsSystem::Update() {
-    for (auto node : nodes) {
-        node.velocity->hasMovedThisFrame = false;
+void PhysicsSystem::UpdateNode(Node* node) {
+    if (node->velocity->hasUpdated) {
+        return;
     }
 
-    bool anyNodesNeedToMove = true;
-    while (anyNodesNeedToMove) {
-        anyNodesNeedToMove = false;
-        for (auto node : nodes) {
-            bool wasUpdated = UpdateNode(&node);
+    if (UpdateNodeAxis(node, Y)) {
+        if(UpdateNodeAxis(node, X)) {
+            node->velocity->hasUpdated = true;
+        }
+    }
+}
 
-            //if (!node.velocity->hasMovedThisFrame) {
-            if (!wasUpdated) {
-                anyNodesNeedToMove = true;
+void PhysicsSystem::Update() {
+    for (auto node : nodes) {
+        node.velocity->hasUpdated = false;
+        node.velocity->hasMoved = false;
+        node.velocity->hasBeenPushed = false;
+    }
+
+    bool anyNodesNeedUpdate = true;
+    while (anyNodesNeedUpdate) {
+        anyNodesNeedUpdate = false;
+        for (auto node : nodes) {
+            UpdateNode(&node);
+
+            // If this node was not updated
+            if (!node.velocity->hasUpdated) {
+                anyNodesNeedUpdate = true;
             }
         }
     }

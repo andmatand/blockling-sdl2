@@ -4,13 +4,37 @@ World::World() : physicsAccumulator(0) {
     // DEBUG
     using Graphics::TILE_W;
     using Graphics::TILE_H;
-    Brick* brick = new Brick(TILE_W * 9, TILE_H * 7);
-    AddEntity(brick);
+
+    for (uint16_t x = 7; x < 15; x++) {
+        Brick* brick = new Brick(TILE_W * x, TILE_H * 8);
+        AddEntity(brick);
+        delete brick;
+    }
+
+    for (uint16_t x = 7; x < 15; x++) {
+        Block* block = new Block(TILE_W * x, TILE_H * 7);
+        AddEntity(block);
+        delete block;
+    }
 
     for (uint16_t y = 0; y < 3; y++) {
-        Block* block = new Block(TILE_W * 9, TILE_H * y);
+        Block* block = new Block(TILE_W * 10, TILE_H * y);
         AddEntity(block);
+        delete block;
     }
+
+    for (uint16_t y = 0; y < 3; y++) {
+        Block* block = new Block(TILE_W * 11, TILE_H * y);
+        AddEntity(block);
+        delete block;
+    }
+
+    Block* block = new Block(TILE_W * 7, TILE_H * 6);
+    Velocity* velocity = static_cast<Velocity*>(block->GetComponent(VELOCITY));
+    velocity->x = 1;
+    AddEntity(block);
+
+    delete block;
 }
 
 void World::AddEntity(Entity* entity) {

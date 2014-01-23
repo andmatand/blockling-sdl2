@@ -21,6 +21,8 @@ class PhysicsSystem : public System {
         void Update();
 
     private:
+        enum AXIS { X, Y };
+
         struct Node {
             Position* position;
             Size* size;
@@ -33,10 +35,11 @@ class PhysicsSystem : public System {
         std::vector<Node> nodes;
         std::vector<Node> collidables;
 
-        static bool RectangleOverlap(Position*, Size*, Position*, Size*);
         static bool NodesAreTheSame(Node*, Node*);
         static bool NodeNeedsToMove(Node*);
-        bool UpdateNode(Node* node);
+        static bool RectangleOverlap(Position*, Size*, Position*, Size*);
+        void UpdateNode(Node* node);
+        bool UpdateNodeAxis(Node*, AXIS);
 };
 
 #endif // PHYSICS_HPP
