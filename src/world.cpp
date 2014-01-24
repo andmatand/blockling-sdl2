@@ -1,7 +1,7 @@
 #include "world.hpp"
 
 World::World() : physicsAccumulator(0) {
-    // DEBUG
+    // DEBUG: Set up a physics test scenario
     using Graphics::TILE_W;
     using Graphics::TILE_H;
 
@@ -31,9 +31,8 @@ World::World() : physicsAccumulator(0) {
 
     Block* block = new Block(TILE_W * 7, TILE_H * 6);
     Velocity* velocity = static_cast<Velocity*>(block->GetComponent(VELOCITY));
-    velocity->x = 1;
+    velocity->x = 2;
     AddEntity(block);
-
     delete block;
 }
 

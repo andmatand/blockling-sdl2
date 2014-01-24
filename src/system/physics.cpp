@@ -28,6 +28,18 @@ void PhysicsSystem::AddEntity(Entity* entity) {
     }
 }
 
+// Returns the first node encountered that overlaps with the given position and
+// size
+PhysicsSystem::Node* PhysicsSystem::FindNode(Position position, Size size) {
+    for (auto& node : nodes) {
+        if (RectangleOverlap(position, size, *node.position, *node.size)) {
+            return &node;
+        }
+    }
+
+    return NULL;
+}
+
 bool PhysicsSystem::NodeNeedsToMove(Node* node) {
     if (node->velocity != NULL) {
         if (node->velocity->x != 0 || node->velocity->y != 0 ) {
@@ -50,12 +62,12 @@ bool PhysicsSystem::NodesAreTheSame(Node* node1, Node* node2) {
     }
 }
 
-bool PhysicsSystem::RectangleOverlap(Position* position1, Size* size1,
-                                     Position* position2, Size* size2) {
-    if (position1->x < (position2->x + size2->w) &&
-        (position1->x + size1->w) > position2->x &&
-        position1->y < (position2->y + size2->h) &&
-        (position1->y + size1->h) > position2->y) {
+bool PhysicsSystem::RectangleOverlap(Position position1, Size size1,
+                                     Position position2, Size size2) {
+    if (position1.x < (position2.x + size2.w) &&
+        (position1.x + size1.w) > position2.x &&
+        position1.y < (position2.y + size2.h) &&
+        (position1.y + size1.h) > position2.y) {
         return true;
     }
     else {
@@ -122,8 +134,8 @@ bool PhysicsSystem::UpdateNodeAxis(Node* node, AXIS axis) {
             // If the collidable is not for the same entity, and the node is
             // overlapping with it
             if (!NodesAreTheSame(node, &cn) &&
-                RectangleOverlap(&testPosition, node->size,
-                                 cn.position, cn.size)) {
+                RectangleOverlap(testPosition, *node->size,
+                                 *cn.position, *cn.size)) {
 
                 // If the collidable is not movable, or it has already moved
                 // this frame
@@ -202,6 +214,29 @@ bool PhysicsSystem::UpdateNodeAxis(Node* node, AXIS axis) {
         if (node->position->x != originalPosition.x ||
             node->position->y != originalPosition.y) {
             node->velocity->hasMoved = true;
+
+            if (axis == X) {
+                // Check if there is a node on top of the node's original
+                // position
+                Position searchPosition;
+                searchPosition.x = originalPosition.x;
+                searchPosition.y = originalPosition.y - 1;
+
+                Size searchSize;
+                searchSize.w = node->size->w;
+                searchSize.h = node->size->h;
+
+                Node* passenger = FindNode(searchPosition, searchSize);
+
+                // If a passenger was found
+                if (passenger != NULL) {
+                    // Set the passenger's velocity to what it needs to be to
+                    // move to where we are now
+                    passenger->velocity->x = node->position->x -
+                                             originalPosition.x;
+                    passenger->velocity->hasUpdated = false;
+                }
+            }
         }
 
         return true;

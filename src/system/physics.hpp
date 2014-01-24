@@ -37,7 +37,8 @@ class PhysicsSystem : public System {
 
         static bool NodesAreTheSame(Node*, Node*);
         static bool NodeNeedsToMove(Node*);
-        static bool RectangleOverlap(Position*, Size*, Position*, Size*);
+        static bool RectangleOverlap(Position, Size, Position, Size);
+        Node* FindNode(Position, Size);
         void UpdateNode(Node* node);
         bool UpdateNodeAxis(Node*, AXIS);
 };
