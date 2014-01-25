@@ -27,8 +27,8 @@ namespace Graphics {
                 // If the pixel is not transparent
                 if (GetPixelAlpha(surface, x, y) != 0) {
                     // Set this as the top
-                    rect->y = y;
                     rect->h -= (y - rect->y);
+                    rect->y = y;
 
                     finished = true;
                     break;
@@ -62,8 +62,8 @@ namespace Graphics {
                 // If the pixel is not transparent
                 if (GetPixelAlpha(surface, x, y) != 0) {
                     // Set this as the left side
+                    rect->w -= (x - rect->x);
                     rect->x = x;
-                    //rect->w -= (x - rect->x);
 
                     finished = true;
                     break;
