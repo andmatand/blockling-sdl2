@@ -25,8 +25,8 @@ void RenderSystem::Update() {
         SDL_Rect destRect;
         destRect.x = node.position->x;
         destRect.y = node.position->y;
-        destRect.w = node.size->w;
-        destRect.h = node.size->h;
+        destRect.w = node.sprite->w;
+        destRect.h = node.sprite->h;
 
         SDL_RenderCopy(Graphics::renderer,
                        Graphics::spriteTexture,

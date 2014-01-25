@@ -216,6 +216,9 @@ bool PhysicsSystem::UpdateNodeAxis(Node* node, AXIS axis) {
             node->velocity->hasMoved = true;
 
             if (axis == X) {
+                // Apply friction
+                node->velocity->x = 0;
+
                 // Check if there is a node on top of the node's original
                 // position
                 Position searchPosition;
@@ -223,15 +226,17 @@ bool PhysicsSystem::UpdateNodeAxis(Node* node, AXIS axis) {
                 searchPosition.y = originalPosition.y - 1;
 
                 Size searchSize;
-                searchSize.w = node->size->w;
-                searchSize.h = node->size->h;
+                searchSize.w = 1;
+                searchSize.h = 1;
 
                 Node* passenger = FindNode(searchPosition, searchSize);
 
-                // If a passenger was found
-                if (passenger != NULL) {
+                // If a passenger was found, and it is aligned with the node's
+                // original position on the x-axis
+                if (passenger != NULL &&
+                    passenger->position->x == originalPosition.x) {
                     // Set the passenger's velocity to what it needs to be to
-                    // move to where we are now
+                    // move to where the node is now
                     passenger->velocity->x = node->position->x -
                                              originalPosition.x;
                     passenger->velocity->hasUpdated = false;

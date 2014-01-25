@@ -11,8 +11,7 @@ struct Velocity : Component {
     bool hasUpdated;
     bool hasBeenPushed;
 
-    Velocity() : x(0), y(0), hasMoved(false),
-                 hasUpdated(false) {};
+    Velocity() : x(0), y(0), hasMoved(false), hasUpdated(false) {};
 };
 
 #endif // VELOCITY_HPP

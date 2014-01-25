@@ -29,11 +29,10 @@ World::World() : physicsAccumulator(0) {
         delete block;
     }
 
-    Block* block = new Block(TILE_W * 7, TILE_H * 6);
-    Velocity* velocity = static_cast<Velocity*>(block->GetComponent(VELOCITY));
-    velocity->x = 2;
-    AddEntity(block);
-    delete block;
+    Player* player = new Player(TILE_W * 7, TILE_H * 6);
+    playerVelocity = static_cast<Velocity*>(player->GetComponent(VELOCITY));
+    AddEntity(player);
+    delete player;
 }
 
 void World::AddEntity(Entity* entity) {
@@ -43,12 +42,15 @@ void World::AddEntity(Entity* entity) {
 }
 
 void World::Update(uint32_t timeDelta) {
-    const float PHYSICS_TIMESTEP = 20;
+    const float PHYSICS_TIMESTEP = 40;
 
     physicsAccumulator += timeDelta;
 
     //uint16_t numSteps = 0;
     while (physicsAccumulator >= PHYSICS_TIMESTEP) {
+        // DEBUG
+        playerVelocity->x = 4;
+
         //numSteps++;
 
         gravitySystem.Update();

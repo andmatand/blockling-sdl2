@@ -4,9 +4,9 @@ LIBS=`sdl2-config --libs`
 TARGET=blockling
 SRC_DIR=src/
 OBJ=$(SRC_DIR)asset_loader.o $(SRC_DIR)entity.o $(SRC_DIR)entity/block.o \
-    $(SRC_DIR)entity/brick.o $(SRC_DIR)graphics.o $(SRC_DIR)main.o \
-    $(SRC_DIR)system.o $(SRC_DIR)system/gravity.o $(SRC_DIR)system/physics.o \
-    $(SRC_DIR)system/render.o $(SRC_DIR)world.o
+    $(SRC_DIR)entity/brick.o $(SRC_DIR)entity/player.o $(SRC_DIR)graphics.o \
+    $(SRC_DIR)main.o $(SRC_DIR)system.o $(SRC_DIR)system/gravity.o \
+    $(SRC_DIR)system/physics.o $(SRC_DIR)system/render.o $(SRC_DIR)world.o
 
 $(TARGET): $(OBJ)
 	$(CXX) $(CXXFLAGS) -o $(TARGET) $^ $(LIBS) 

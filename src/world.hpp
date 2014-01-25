@@ -5,6 +5,7 @@
 #include "entity.hpp"
 #include "entity/block.hpp"
 #include "entity/brick.hpp"
+#include "entity/player.hpp"
 #include "system.hpp"
 #include "system/gravity.hpp"
 #include "system/physics.hpp"
@@ -21,6 +22,9 @@ class World {
         GravitySystem gravitySystem;
         PhysicsSystem physicsSystem;
         RenderSystem renderSystem;
+
+        // DEBUG
+        Velocity* playerVelocity;
 };
 
 #endif // WORLD_HPP
