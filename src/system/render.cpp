@@ -1,12 +1,7 @@
 #include "render.hpp"
 
-//RenderSystem::RenderSystem() : componentMask(POSITION | SPRITE) {}
-RenderSystem::RenderSystem() {
-    componentMask = POSITION | SIZE | SPRITE;
-}
-
 void RenderSystem::AddEntity(Entity* entity) {
-    if (!ScreenEntity(entity)) return;
+    if (!ScreenEntity(entity, (POSITION | SIZE | SPRITE))) return;
 
     Node node;
     node.position = static_cast<Position*>(entity->GetComponent(POSITION));

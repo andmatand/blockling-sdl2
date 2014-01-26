@@ -15,7 +15,6 @@
 
 class GravitySystem : public System {
     public:
-        GravitySystem();
         void AddEntity(Entity* entity);
         void Update();
 

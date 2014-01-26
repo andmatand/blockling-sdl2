@@ -1,11 +1,7 @@
 #include "gravity.hpp"
 
-GravitySystem::GravitySystem() {
-    componentMask = VELOCITY;
-};
-
 void GravitySystem::AddEntity(Entity* entity) {
-    if (!ScreenEntity(entity)) return;
+    if (!ScreenEntity(entity, VELOCITY)) return;
 
     Node node;
     node.velocity = static_cast<Velocity*>(entity->GetComponent(VELOCITY));

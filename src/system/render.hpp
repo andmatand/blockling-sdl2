@@ -10,7 +10,6 @@
 
 class RenderSystem : public System {
     public:
-        RenderSystem();
         void AddEntity(Entity* entity);
         void Update();
 

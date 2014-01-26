@@ -1,12 +1,7 @@
 #include "physics.hpp"
 
-PhysicsSystem::PhysicsSystem() {
-    componentMask = POSITION | SIZE | VELOCITY;
-    collidableMask = COLLIDABLE | POSITION | SIZE;
-};
-
 void PhysicsSystem::AddEntity(Entity* entity) {
-    if (ScreenEntity(entity)) {
+    if (ScreenEntity(entity, (POSITION | SIZE | VELOCITY))) {
         Node node;
         node.position = static_cast<Position*>(entity->GetComponent(POSITION));
         node.size = static_cast<Size*>(entity->GetComponent(SIZE));
@@ -15,7 +10,7 @@ void PhysicsSystem::AddEntity(Entity* entity) {
         nodes.push_back(node);
     }
 
-    if ((entity->GetComponentMask() & collidableMask) == collidableMask) {
+    if (ScreenEntity(entity, (COLLIDABLE | POSITION | SIZE))) {
         Node c;
         c.position = static_cast<Position*>(entity->GetComponent(POSITION));
         c.size = static_cast<Size*>(entity->GetComponent(SIZE));

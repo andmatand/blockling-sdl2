@@ -16,7 +16,6 @@
 
 class PhysicsSystem : public System {
     public:
-        PhysicsSystem();
         void AddEntity(Entity* entity);
         void Update();
 
@@ -31,7 +30,6 @@ class PhysicsSystem : public System {
             Node() : position(NULL), size(NULL), velocity(NULL) {};
         };
 
-        uint32_t collidableMask;
         std::vector<Node> nodes;
         std::vector<Node> collidables;
 
